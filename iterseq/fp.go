@@ -16,3 +16,14 @@ func Filter[T any](predicate func(x T) bool, seq iter.Seq[T]) iter.Seq[T] {
 		}
 	}
 }
+
+// Map iter.Seqのすべての要素に同じ関数を適用する
+func Map[S any, T any](apply func(x S) T, seq iter.Seq[S]) iter.Seq[T] {
+	return func(yield func(T) bool) {
+		for x := range seq {
+			if !yield(apply(x)) {
+				return
+			}
+		}
+	}
+}
