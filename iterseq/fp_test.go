@@ -2,6 +2,7 @@ package iterseq
 
 import (
 	"slices"
+	"strconv"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -18,5 +19,29 @@ func TestFilter(t *testing.T) {
 		result := slices.Collect(Filter(isEven, slices.Values(list)))
 		// Assert
 		require.Equal(t, []int64{2, 4}, result)
+	})
+}
+
+func TestMap(t *testing.T) {
+	t.Run("すべての要素に関数を適用できる", func(t *testing.T) {
+		// Arrange
+		double := func(x int64) int64 {
+			return 2 * x
+		}
+		list := []int64{1, 2, 3}
+		// Act
+		result := slices.Collect(Map(double, slices.Values(list)))
+		// Assert
+		require.Equal(t, []int64{2, 4, 6}, result)
+	})
+	t.Run("入力と出力の型が異なっていてもいい", func(t *testing.T) {
+		// []int -> []string
+		// Arrange
+		toString := strconv.Itoa
+		list := []int{1, 2, 3}
+		// Act
+		result := slices.Collect(Map(toString, slices.Values(list)))
+		// Assert
+		require.Equal(t, []string{"1", "2", "3"}, result)
 	})
 }
